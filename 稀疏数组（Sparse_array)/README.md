@@ -23,13 +23,37 @@
   - SSK, Symmetric skyline format.
   - SSR, Symmetric sparse row format.
 #### COO, coordinate format.
-- COO格式是将矩阵中的非零元素以坐标的方式存储。例如下面的矩阵：
+- 采用三元组(row, col, data)(或称为ijv format)的形式来存储矩阵中非零元素的信息
+- 三个数组 row 、col 和 data 分别保存非零元素的行下标、列下标与值（一般长度相同）
+- 故 coo[row[k]][col[k]] = data[k] ，即矩阵的第 row[k] 行、第 col[k] 列的值为 data[k]
+![image](https://user-images.githubusercontent.com/47712424/136163211-525a4ff6-48ab-439a-a1d9-1a844f6216ae.png)
 
-- COO格式即将非零元素的行，列，值三个元素记录下来形成下面的表格。
+#### CSC, compressed sparse column format.
 
-因此可以用两个长为nnz（非零元素的个数）整数数组分别表示行列指标，用一个实数数组表示矩阵元。
+- csc_matrix是按列对矩阵进行压缩的
+- 通过 indices, indptr，data 来确定矩阵，可以对比CSR
+- data 表示矩阵中的非零数据
+- 对于第 i 列而言，该行中非零元素的行索引为indices[indptr[i]:indptr[i+1]]
+- 可以将 indptr 理解成利用其自身索引 i 来指向第 i 列元素的列索引
+- 根据[indptr[i]:indptr[i+1]]，我就得到了该行中的非零元素个数，如
+- 若 index[i] = 1 且 index[i+1] = 1 ，则第 i 列的没有非零元素
+- 若 index[j] = 4 且 index[j+1] = 6 ，则第 j列的非零元素的行索引为 indices[4:6]
+- 得到了列索引、行索引，相应的数据存放在： data[indptr[i]:indptr[i+1]]
 
-#### DOK,Dictionary of keys
+https://user-images.githubusercontent.com/47712424/136164859-1d58bfab-63d0-4984-812a-088f86d72d85.mp4
 
-DOK的存储格式与COO格式相同，只是用字典变量存数稀疏矩阵的矩阵元。行列值作为字典的键，矩阵元作为字典内容。以上面为例。
-![image](https://user-images.githubusercontent.com/47712424/136161780-7b0f0ae1-a825-4564-8733-bc060c6854d4.png)
+
+#### CSR, compressed sparse row format.
+- csr_matrix是按行对矩阵进行压缩的
+- 通过 indices, indptr，data 来确定矩阵。
+- data 表示矩阵中的非零数据
+- 对于第 i 行而言，该行中非零元素的列索引为 indices[indptr[i]:indptr[i+1]]
+- 可以将 indptr 理解成利用其自身索引 i 来指向第 i 行元素的列索引
+- 根据[indptr[i]:indptr[i+1]]，我就得到了该行中的非零元素个数，如
+  - 若 index[i] = 3 且 index[i+1] = 3 ，则第 i 行的没有非零元素
+  - 若 index[j] = 6 且 index[j+1] = 7 ，则第 j 行的非零元素的列索引为 indices[6:7]
+- 得到了行索引、列索引，相应的数据存放在： data[indptr[i]:indptr[i+1]]
+
+https://user-images.githubusercontent.com/47712424/136163760-a6f7a321-47e5-409a-9a72-0600774f74dc.mp4
+
+
