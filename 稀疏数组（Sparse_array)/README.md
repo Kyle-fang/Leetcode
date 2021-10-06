@@ -22,13 +22,13 @@
   - JAD, the jagged diagonal format.
   - SSK, Symmetric skyline format.
   - SSR, Symmetric sparse row format.
-#### COO, coordinate format.
+#### 1、COO, coordinate format.
 - 采用三元组(row, col, data)(或称为ijv format)的形式来存储矩阵中非零元素的信息
 - 三个数组 row 、col 和 data 分别保存非零元素的行下标、列下标与值（一般长度相同）
 - 故 coo[row[k]][col[k]] = data[k] ，即矩阵的第 row[k] 行、第 col[k] 列的值为 data[k]
 ![image](https://user-images.githubusercontent.com/47712424/136163211-525a4ff6-48ab-439a-a1d9-1a844f6216ae.png)
 
-#### CSC, compressed sparse column format.
+#### 2、CSC, compressed sparse column format.
 
 - csc_matrix是按列对矩阵进行压缩的
 - 通过 indices, indptr，data 来确定矩阵，可以对比CSR
@@ -50,7 +50,7 @@ https://user-images.githubusercontent.com/47712424/136164859-1d58bfab-63d0-4984-
   - 由 indptr[3] = 4 和 indptr[4] = 6 可知，第 4 列有2个非零元素。
   - 它们的行索引为 indices[4:6] = [4, 6] ，且存放的数据为 data[4] = 1 ，data[5] = 9
   - 因此矩阵第 i 行的非零元素 csr[4][3] = 1 ， csr[6][3] = 9
-#### CSR, compressed sparse row format.
+#### 3、CSR, compressed sparse row format.
 - csr_matrix是按行对矩阵进行压缩的
 - 通过 indices, indptr，data 来确定矩阵。
 - data 表示矩阵中的非零数据
@@ -73,20 +73,20 @@ https://user-images.githubusercontent.com/47712424/136163760-a6f7a321-47e5-409a-
   - 因此矩阵第 4 行的非零元素 csr[4][2] = 7 ， csr[4][3] = 1 和 csr[4][4] = 2
 
 
-#### DOK，Dictionary of Keys Matrix 按键字典矩阵
+#### 4、DOK，Dictionary of Keys Matrix 按键字典矩阵
 - 采用字典来记录矩阵中不为0的元素
 - 字典的 key 存的是记录元素的位置信息的元组， value 是记录元素的具体值
 ##### 适用场景
 - 逐渐添加矩阵的元素
 
-#### BSR，Block Sparse Row Matrix 分块压缩稀疏行格式
+#### 5、BSR，Block Sparse Row Matrix 分块压缩稀疏行格式
 - 基于行的块压缩，与csr类似，都是通过data，indices，indptr来确定矩阵
 - 与csr相比，只是data中的元数据由0维的数变为了一个矩阵（块），其余完全相同块大小 blocksize
   - 块大小 (R, C) 必须均匀划分矩阵 (M, N) 的形状。
   - R和C必须满足关系：M % R = 0 和 N % C = 0
   - 适用场景及优点参考csr
 
-#### LIL，Linked List Matrix 链表矩阵
+#### 6、LIL，Linked List Matrix 链表矩阵
 
 - 使用两个列表存储非0元素data
 - rows保存非零元素所在的列
@@ -102,7 +102,7 @@ https://user-images.githubusercontent.com/47712424/136167405-84724ec3-632d-43e4-
 - 需要注意的是，该方法插入一个元素最坏情况下可能导致线性时间的代价，所以要确保对每个元素的索引进行预排序
 
 
-#### DIA，Diagonal Matrix 对角存储格式
+#### 7、DIA，Diagonal Matrix 对角存储格式
 - 最适合对角矩阵的存储方式
 - dia_matrix通过两个数组确定： data 和 offsets
   - data ：对角线元素的值
