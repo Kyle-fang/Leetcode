@@ -42,7 +42,14 @@
 
 https://user-images.githubusercontent.com/47712424/136164859-1d58bfab-63d0-4984-812a-088f86d72d85.mp4
 
-
+- 对于矩阵第 0 列，我们需要先得到其非零元素行索引
+  - 由 indptr[0] = 0 和 indptr[1] = 1 可知，第 0列行有1个非零元素。
+  - 它们的行索引为 indices[0:1] = [0] ，且存放的数据为 data[0] = 8
+  - 因此矩阵第 0 行的非零元素 csc[0][0] = 8
+- 对于矩阵第 3 列，同样我们需要先计算其非零元素行索引
+  - 由 indptr[3] = 4 和 indptr[4] = 6 可知，第 4 行有2个非零元素。
+  - 它们的行索引为 indices[4:6] = [4, 6] ，且存放的数据为 data[4] = 1 ，data[5] = 9
+  - 因此矩阵第 i 行的非零元素 csr[4][3] = 1 ， csr[6][3] = 9
 #### CSR, compressed sparse row format.
 - csr_matrix是按行对矩阵进行压缩的
 - 通过 indices, indptr，data 来确定矩阵。
@@ -56,4 +63,11 @@ https://user-images.githubusercontent.com/47712424/136164859-1d58bfab-63d0-4984-
 
 https://user-images.githubusercontent.com/47712424/136163760-a6f7a321-47e5-409a-9a72-0600774f74dc.mp4
 
-
+- 对于矩阵第 0 行，我们需要先得到其非零元素列索引
+  - 由 indptr[0] = 0 和 indptr[1] = 2 可知，第 0 行有两个非零元素。
+  - 它们的列索引为 indices[0:2] = [0, 2] ，且存放的数据为 data[0] = 8 ， data[1] = 2
+  - 因此矩阵第 0 行的非零元素 csr[0][0] = 8 和 csr[0][2] = 2
+- 对于矩阵第 4 行，同样我们需要先计算其非零元素列索引
+  - 由 indptr[4] = 3 和 indptr[5] = 6 可知，第 4 行有3个非零元素。
+  - 它们的列索引为 indices[3:6] = [2, 3，4] ，且存放的数据为 data[3] = 7 ，data[4] = 1 ，data[5] = 2
+  - 因此矩阵第 4 行的非零元素 csr[4][2] = 7 ， csr[4][3] = 1 和 csr[4][4] = 2
