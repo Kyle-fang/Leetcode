@@ -47,7 +47,7 @@ https://user-images.githubusercontent.com/47712424/136164859-1d58bfab-63d0-4984-
   - 它们的行索引为 indices[0:1] = [0] ，且存放的数据为 data[0] = 8
   - 因此矩阵第 0 行的非零元素 csc[0][0] = 8
 - 对于矩阵第 3 列，同样我们需要先计算其非零元素行索引
-  - 由 indptr[3] = 4 和 indptr[4] = 6 可知，第 4 行有2个非零元素。
+  - 由 indptr[3] = 4 和 indptr[4] = 6 可知，第 4 列有2个非零元素。
   - 它们的行索引为 indices[4:6] = [4, 6] ，且存放的数据为 data[4] = 1 ，data[5] = 9
   - 因此矩阵第 i 行的非零元素 csr[4][3] = 1 ， csr[6][3] = 9
 #### CSR, compressed sparse row format.
@@ -71,3 +71,46 @@ https://user-images.githubusercontent.com/47712424/136163760-a6f7a321-47e5-409a-
   - 由 indptr[4] = 3 和 indptr[5] = 6 可知，第 4 行有3个非零元素。
   - 它们的列索引为 indices[3:6] = [2, 3，4] ，且存放的数据为 data[3] = 7 ，data[4] = 1 ，data[5] = 2
   - 因此矩阵第 4 行的非零元素 csr[4][2] = 7 ， csr[4][3] = 1 和 csr[4][4] = 2
+
+
+#### DOK，Dictionary of Keys Matrix 按键字典矩阵
+- 采用字典来记录矩阵中不为0的元素
+- 字典的 key 存的是记录元素的位置信息的元组， value 是记录元素的具体值
+##### 适用场景
+- 逐渐添加矩阵的元素
+
+#### BSR，Block Sparse Row Matrix 分块压缩稀疏行格式
+- 基于行的块压缩，与csr类似，都是通过data，indices，indptr来确定矩阵
+- 与csr相比，只是data中的元数据由0维的数变为了一个矩阵（块），其余完全相同块大小 blocksize
+  - 块大小 (R, C) 必须均匀划分矩阵 (M, N) 的形状。
+  - R和C必须满足关系：M % R = 0 和 N % C = 0
+  - 适用场景及优点参考csr
+
+#### LIL，Linked List Matrix 链表矩阵
+
+- 使用两个列表存储非0元素data
+- rows保存非零元素所在的列
+- 可以使用列表赋值来
+添加元素，如 lil[(0, 0)] = 8
+
+https://user-images.githubusercontent.com/47712424/136167405-84724ec3-632d-43e4-95ca-2edbbe6f11b4.mp4
+
+- lil[(0, -1)] = 4 ：第0行的最后一列元素为4
+- lil[(4, 2)] = 5 ：第4行第2列的元素为5
+##### 适用场景
+- 适用的场景是逐渐添加矩阵的元素（且能快速获取行相关的数据）
+- 需要注意的是，该方法插入一个元素最坏情况下可能导致线性时间的代价，所以要确保对每个元素的索引进行预排序
+
+
+#### DIA，Diagonal Matrix 对角存储格式
+- 最适合对角矩阵的存储方式
+- dia_matrix通过两个数组确定： data 和 offsets
+  - data ：对角线元素的值
+  - offsets ：第 i 个 offsets 是当前第 i 个对角线和主对角线的距离
+![image](https://user-images.githubusercontent.com/47712424/136168240-e5ac32b6-9d57-43a9-819b-88add2ad8d40.png)
+
+- data[k:] 存储了 offsets[k] 对应的对角线的全部元素
+  - 当 offsets[0] = 0 时，表示该对角线即是主对角线，相应的值为 [1, 2, 3, 4, 5]
+  - 当 offsets[2] = 2 时，表示该对角线为主对角线向上偏移2个单位，相应的值为 [11, 12, 13, 14, 15]
+- 但该对角线上元素仅有三个 ，于是采用先出现的元素无效的原则即前两个元素对构造矩阵无效，故该对角线上的元素为 [13, 14, 15]
+
